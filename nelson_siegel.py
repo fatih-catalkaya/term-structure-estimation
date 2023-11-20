@@ -88,8 +88,8 @@ def compute_parameters(df: pd.DataFrame) -> tuple[list[float], float, optimize.O
     param[1] = utils.compute_beta_1(df, float(param[0]))
     param[2] = -1.0
     param[3] = 1.0
-    lower_bounds = [(utils.compute_yield_of_longest_bond(df) - 0.03), -30, -30, 10e-4]
-    upper_bounds = [(utils.compute_yield_of_longest_bond(df) + 0.03), 30, 30, 30]
+    lower_bounds = [(utils.compute_yield_of_longest_bond(df) - 3), -30, -30, 10e-4]
+    upper_bounds = [(utils.compute_yield_of_longest_bond(df) + 3), 30, 30, 30]
     res = optimize.least_squares(error_function, param, kwargs={"df": df},
                                      bounds=(lower_bounds, upper_bounds),
                                      ftol=10e-12, xtol=10e-12, gtol=10e-12)

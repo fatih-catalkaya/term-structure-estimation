@@ -23,7 +23,7 @@ def compute_beta_1(df: pd.DataFrame, beta_0: float) -> float:
 
 
 def compute_yield_of_longest_bond(df: pd.DataFrame) -> float:
-    return df.sort_values(by=["maturity"], ascending=False)[:1]["yield"].values[0] / 100.0
+    return df.sort_values(by=["maturity"], ascending=False)[:1]["yield"].values[0]
 
 
 def compute_discount_factor(interest_rate: float, ytm: float) -> float:
