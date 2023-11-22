@@ -1,6 +1,6 @@
 import math
 import sys
-from typing import Tuple, List, Any
+from typing import Any
 
 import pandas as pd
 import numpy as np
@@ -34,9 +34,10 @@ def interest_rate_to_discount_factor(interest_rate: float, maturity) -> float:
     return math.exp(-interest_rate * maturity)
 
 
-def compute_forward_curve(pchip_interpolator: PchipInterpolator, ytms: list[float], ax) -> None:
+def compute_forward_curve(pchip_interpolator: PchipInterpolator, ytm_min: float, ytm_max: float, ax) -> None:
     h = math.sqrt(sys.float_info.epsilon)
     inst_f_rates = []
+    ytms = np.linspace(ytm_min, ytm_max, num=50)
     for ytm in ytms:
         ytm_plus_h = ytm + h
         inst_f_rate_plus_h = -math.log(interest_rate_to_discount_factor(pchip_interpolator(ytm_plus_h), ytm_plus_h))
@@ -44,7 +45,7 @@ def compute_forward_curve(pchip_interpolator: PchipInterpolator, ytms: list[floa
         inst_f_rate_minus_h = -math.log(interest_rate_to_discount_factor(pchip_interpolator(ytm_minus_h), ytm_minus_h))
         inst_f_rates.append((inst_f_rate_plus_h - inst_f_rate_minus_h) / (2.0 * h))
 
-    ax.plot(ytms, inst_f_rates, marker="x")
+    ax.plot(ytms, inst_f_rates)
     return None
 
 
@@ -52,5 +53,5 @@ def plot_splines(df: pd.DataFrame, today: datetime) -> None:
     fig, (ax1, ax2) = plt.subplots(1, 2)
     pchip_interpolator, unique_ytms = compute_monotone_cubic_splines(df, today, ax1)
     unique_ytms = unique_ytms
-    compute_forward_curve(pchip_interpolator, unique_ytms, ax2)
+    compute_forward_curve(pchip_interpolator, min(unique_ytms), max(unique_ytms), ax2)
     fig.show()
