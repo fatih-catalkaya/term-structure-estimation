@@ -61,7 +61,7 @@ if __name__ == "__main__":
     df = data_importer.import_data()
     today = datetime(year=2023, day=10, month=11)
 
-    monotone_cubic_splines.compute_monotone_cubic_splines(df, datetime(year=2023, month=11, day=10))
+    monotone_cubic_splines.plot_splines(df, datetime(year=2023, month=11, day=10))
 
     ns_beta, ns_tau_1, _ = nelson_siegel.compute_parameters(df)
     plot_nelson_siegel_and_data(df, ns_beta, ns_tau_1)
