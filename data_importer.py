@@ -27,6 +27,9 @@ def import_data() -> pd.DataFrame:
     # Drop Inflation Index Bonds
     df = df[~df["description"].str.contains("index")]
 
+    # Drop Green Bonds
+    df = df[~df["description"].str.contains("Green")]
+
     # Drop other unnecessary columns
     df = df.drop(columns=["residual_life_ym", "issue_vol_bn"])
 
