@@ -12,12 +12,11 @@ from scipy.interpolate import PchipInterpolator
 
 def compute_monotone_cubic_splines(df: pd.DataFrame, today: datetime, ax) \
         -> tuple[PchipInterpolator, list[float | Any]]:
-    unique_maturities = df["maturity"].unique()
-
     maturities = df["maturity"]
     ytm = maturities.apply(lambda row: (row - today).days / 365.0)
     ax.scatter(ytm, df["yield"], marker="x", label="German bonds", color="tab:orange")
 
+    unique_maturities = df["maturity"].unique()
     yields = []
     for maturity in unique_maturities:
         bonds_for_maturity = df[df["maturity"] == maturity]

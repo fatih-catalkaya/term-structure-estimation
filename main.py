@@ -6,6 +6,7 @@ import pandas as pd
 from prettytable import PrettyTable
 
 import data_importer
+import monotone_convex_splines
 import monotone_cubic_splines
 import nelson_siegel
 import svensson
@@ -61,7 +62,8 @@ if __name__ == "__main__":
     df = data_importer.import_data()
     today = datetime(year=2023, day=10, month=11)
 
-    monotone_cubic_splines.plot_splines(df, datetime(year=2023, month=11, day=10))
+    monotone_cubic_splines.plot_splines(df, today)
+    # monotone_convex_splines.do_stuff(df, today)
 
     ns_beta, ns_tau_1, _ = nelson_siegel.compute_parameters(df)
     plot_nelson_siegel_and_data(df, ns_beta, ns_tau_1)
