@@ -35,7 +35,7 @@ def plot_nelson_siegel_and_data(df: pd.DataFrame, beta: list[float], tau1: float
     plt.show()
 
 
-def plot_svansson_and_data(df: pd.DataFrame, beta: list[float], tau1: float, tau2: float) -> None:
+def plot_svensson_and_data(df: pd.DataFrame, beta: list[float], tau1: float, tau2: float) -> None:
     today = datetime(year=2023, month=11, day=10)
     published_params = ([0.94381, 2.59860, 3.58184, 6.28684], 0.61208, 13.74114)
     dtm = df["maturity"]
@@ -58,23 +58,55 @@ def plot_svansson_and_data(df: pd.DataFrame, beta: list[float], tau1: float, tau
     plt.show()
 
 
+def plot_mcc(x_values: list[float], yield_values: list[float], forward_values: list[float]) -> None:
+    fig, (ax0, ax1) = plt.subplots(1, 2)
+    fig.suptitle("Computed monotone cubic splines")
+    ax0.plot(x_values, yield_values)
+    ax0.set_title("Yield curve")
+    ax1.plot(x_values, forward_values)
+    ax1.set_title("Instantaneous forward rate")
+    fig.show()
+
+
+def plot_mcx(x_values: list[float], yield_values: list[float], forward_values: list[float]) -> None:
+    fig, (ax0, ax1) = plt.subplots(1, 2)
+    fig.suptitle("Computed monotone convex splines")
+    ax0.plot(x_values, yield_values)
+    ax0.set_title("Yield curve")
+    ax1.plot(x_values, forward_values)
+    ax1.set_title("Instantaneous forward rate")
+    fig.show()
+
+
 if __name__ == "__main__":
+    # Import data, provided from Deutsche Bundesbank
     df = data_importer.import_data()
+
+    # Fix date to today's date (as of writing)
     today = datetime(year=2023, day=10, month=11)
 
-    monotone_cubic_splines.plot_splines(df, today)
-    # monotone_convex_splines.do_stuff(df, today)
-
-    ns_beta, ns_tau_1, _ = nelson_siegel.compute_parameters(df)
-    plot_nelson_siegel_and_data(df, ns_beta, ns_tau_1)
-
-    sv_beta, sv_tau_1, sv_tau_2, _ = svensson.compute_parameters(df)
-    plot_svansson_and_data(df, sv_beta, sv_tau_1, sv_tau_2)
-
+    # Published Data for 11th November 2023
     published_beta = [0.94381, 2.59860, 3.58184, 6.28684]
     published_tau1 = 0.61208
     published_tau2 = 13.74114
 
+    # Compute and plot Nelson-Siegel-Parameter
+    ns_beta, ns_tau_1, _ = nelson_siegel.compute_parameters(df)
+    plot_nelson_siegel_and_data(df, ns_beta, ns_tau_1)
+
+    # Compute and plot Svensson-Parameter
+    sv_beta, sv_tau_1, sv_tau_2, _ = svensson.compute_parameters(df)
+    plot_svensson_and_data(df, sv_beta, sv_tau_1, sv_tau_2)
+
+    # Compute Monotone Cubic splines for yield curve and instantaneous forward rates
+    mcc_x_values, mcc_yields, mcc_forwards = monotone_cubic_splines.compute_splines(df, today)
+    plot_mcc(mcc_x_values, mcc_yields, mcc_forwards)
+
+    # Compute Monotone Convex splines for yield curve and instantaneous forward rates
+    mcx_x_values, mcx_yields, mcx_forwards = monotone_convex_splines.compute_splines(df, today)
+    plot_mcx(mcx_x_values, mcx_yields, mcx_forwards)
+
+    # Print table with Nelson-Siegel and Svensson estimates and published values
     table = PrettyTable(["Parameter", "Computed value (Nelson-Siegel)", "Computed value (Svensson)", "Published value"])
     table.add_rows([
         ["Beta0", ns_beta[0], sv_beta[0], published_beta[0]],

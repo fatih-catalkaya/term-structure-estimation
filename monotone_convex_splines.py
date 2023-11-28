@@ -145,7 +145,7 @@ def compute_forward_interpolant(function_g: Interpolant, discrete_forwards: list
     return forward_interpolant
 
 
-def do_stuff(df: pd.DataFrame, today: datetime):
+def compute_splines(df: pd.DataFrame, today: datetime) -> tuple[list[float], list[float], list[float]]:
     unique_maturities = df["maturity"].unique()
     yields = []
     for maturity in unique_maturities:
@@ -153,17 +153,12 @@ def do_stuff(df: pd.DataFrame, today: datetime):
         yields.append(np.mean(bonds_for_maturity["yield"]))
     ytms = [(row - today).days / 365.0 for row in unique_maturities]
 
-    #yields = [0.0202, 0.0230, 0.0278, 0.0320, 0.0373]
-    #ytms = [1, 2, 3, 4, 5]
-
     discrete_forwards = compute_discrete_forwards(yields, ytms)
     instantaneous_forwards = compute_instantaneous_forwards(discrete_forwards)
     function_g = enforce_monotonicity(ytms, discrete_forwards, instantaneous_forwards)
     forward_interpolant = compute_forward_interpolant(function_g, discrete_forwards)
 
-    x_values = np.linspace(min(ytms), max(ytms), num=50)
+    x_values = np.linspace(min(ytms), max(ytms), num=50).tolist()
     forward_values = [forward_interpolant(x) for x in x_values]
     yield_values = [(1.0 / x) * integrate.quad(lambda t: forward_interpolant(t), 0, x)[0] for x in x_values]
-    plt.plot(x_values, yield_values)
-    plt.show()
-    print("stuff")
+    return x_values, yield_values, forward_values

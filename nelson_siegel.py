@@ -96,5 +96,4 @@ def compute_parameters(df: pd.DataFrame) -> tuple[list[float], float, optimize.O
     res_vec = res["x"]
     beta = res_vec[0:3]
     tau_1 = res_vec[3]
-    print(res)
     return beta, tau_1, res
