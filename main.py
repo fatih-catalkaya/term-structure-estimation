@@ -65,6 +65,7 @@ def plot_mcc(x_values: list[float], yield_values: list[float], forward_values: l
     ax0.set_title("Yield curve")
     ax1.plot(x_values, forward_values)
     ax1.set_title("Instantaneous forward rate")
+    fig.savefig("monotone-cubic.png", dpi=300)
     fig.show()
 
 
@@ -75,6 +76,7 @@ def plot_mcx(x_values: list[float], yield_values: list[float], forward_values: l
     ax0.set_title("Yield curve")
     ax1.plot(x_values, forward_values)
     ax1.set_title("Instantaneous forward rate")
+    fig.savefig("monotone-convex.png", dpi=300)
     fig.show()
 
 
