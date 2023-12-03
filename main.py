@@ -62,6 +62,7 @@ def plot_svensson_and_data(df: pd.DataFrame, beta: list[float], tau1: float, tau
 def plot_cs(x_values: list[float], yield_values: list[float], forward_values: list[float]) -> None:
     fig, (ax0, ax1) = plt.subplots(1, 2)
     fig.suptitle("Computed cubic splines")
+    fig.set_figwidth(12)
     ax0.plot(x_values, yield_values)
     ax0.set_title("Yield curve")
     ax1.plot(x_values, forward_values)
@@ -74,6 +75,7 @@ def plot_cs(x_values: list[float], yield_values: list[float], forward_values: li
 def plot_mcc(x_values: list[float], yield_values: list[float], forward_values: list[float]) -> None:
     fig, (ax0, ax1) = plt.subplots(1, 2)
     fig.suptitle("Computed monotone cubic splines")
+    fig.set_figwidth(12)
     ax0.plot(x_values, yield_values)
     ax0.set_title("Yield curve")
     ax1.plot(x_values, forward_values)
@@ -86,6 +88,7 @@ def plot_mcc(x_values: list[float], yield_values: list[float], forward_values: l
 def plot_mcx(x_values: list[float], yield_values: list[float], forward_values: list[float]) -> None:
     fig, (ax0, ax1) = plt.subplots(1, 2)
     fig.suptitle("Computed monotone convex splines")
+    fig.set_figwidth(12)
     ax0.plot(x_values, yield_values)
     ax0.set_title("Yield curve")
     ax1.plot(x_values, forward_values)
