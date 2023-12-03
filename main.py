@@ -8,6 +8,7 @@ from prettytable import PrettyTable
 import data_importer
 import monotone_convex_splines
 import monotone_cubic_splines
+from cubic_splines import compute_splines as compute_cubic_splines
 import nelson_siegel
 import svensson
 
@@ -58,6 +59,18 @@ def plot_svensson_and_data(df: pd.DataFrame, beta: list[float], tau1: float, tau
     plt.show()
 
 
+def plot_cs(x_values: list[float], yield_values: list[float], forward_values: list[float]) -> None:
+    fig, (ax0, ax1) = plt.subplots(1, 2)
+    fig.suptitle("Computed cubic splines")
+    ax0.plot(x_values, yield_values)
+    ax0.set_title("Yield curve")
+    ax1.plot(x_values, forward_values)
+    ax1.set_title("Instantaneous forward rate")
+    ax1.set_ylim(bottom=1, top=5)
+    fig.savefig("cubic-spline.png", dpi=300)
+    fig.show()
+
+
 def plot_mcc(x_values: list[float], yield_values: list[float], forward_values: list[float]) -> None:
     fig, (ax0, ax1) = plt.subplots(1, 2)
     fig.suptitle("Computed monotone cubic splines")
@@ -65,6 +78,7 @@ def plot_mcc(x_values: list[float], yield_values: list[float], forward_values: l
     ax0.set_title("Yield curve")
     ax1.plot(x_values, forward_values)
     ax1.set_title("Instantaneous forward rate")
+    ax1.set_ylim(bottom=1, top=5)
     fig.savefig("monotone-cubic.png", dpi=300)
     fig.show()
 
@@ -76,6 +90,7 @@ def plot_mcx(x_values: list[float], yield_values: list[float], forward_values: l
     ax0.set_title("Yield curve")
     ax1.plot(x_values, forward_values)
     ax1.set_title("Instantaneous forward rate")
+    ax1.set_ylim(bottom=1, top=5)
     fig.savefig("monotone-convex.png", dpi=300)
     fig.show()
 
@@ -99,6 +114,10 @@ if __name__ == "__main__":
     # Compute and plot Svensson-Parameter
     sv_beta, sv_tau_1, sv_tau_2, _ = svensson.compute_parameters(df)
     plot_svensson_and_data(df, sv_beta, sv_tau_1, sv_tau_2)
+
+    # Compute Cubic splines for yield curve and instantaneos forward rates
+    cs_x_values, cs_yields, cs_forwards = compute_cubic_splines(df, today)
+    plot_cs(cs_x_values, cs_yields, cs_forwards)
 
     # Compute Monotone Cubic splines for yield curve and instantaneous forward rates
     mcc_x_values, mcc_yields, mcc_forwards = monotone_cubic_splines.compute_splines(df, today)
